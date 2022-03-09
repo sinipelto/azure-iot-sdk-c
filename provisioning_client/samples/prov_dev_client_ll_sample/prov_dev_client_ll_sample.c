@@ -27,9 +27,9 @@
 //
 // The protocol you wish to use should be uncommented
 //
-#define SAMPLE_MQTT
+//#define SAMPLE_MQTT
 //#define SAMPLE_MQTT_OVER_WEBSOCKETS
-//#define SAMPLE_AMQP
+#define SAMPLE_AMQP
 //#define SAMPLE_AMQP_OVER_WEBSOCKETS
 //#define SAMPLE_HTTP
 
@@ -154,8 +154,8 @@ static void register_device_callback(PROV_DEVICE_RESULT register_result, const c
 int main()
 {
     SECURE_DEVICE_TYPE hsm_type;
-    //hsm_type = SECURE_DEVICE_TYPE_TPM;
-    hsm_type = SECURE_DEVICE_TYPE_X509;
+    hsm_type = SECURE_DEVICE_TYPE_TPM;
+    //hsm_type = SECURE_DEVICE_TYPE_X509;
     //hsm_type = SECURE_DEVICE_TYPE_SYMMETRIC_KEY;
 
     bool traceOn = false;
