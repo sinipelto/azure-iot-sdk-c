@@ -87,7 +87,7 @@ int main()
             else
             {
                 (void)printf("\r\nREG_ID:\r\n%s\r\n", reg_info.registration_id);
-                (void)printf("\r\EK:\r\n%s\r\n", STRING_c_str(encoded_ek));
+                (void)printf("\r\nEK:\r\n%s\r\n", STRING_c_str(encoded_ek));
                 STRING_delete(encoded_ek);
                 result = 0;
             }
