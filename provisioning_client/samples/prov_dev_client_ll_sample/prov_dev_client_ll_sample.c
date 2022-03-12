@@ -351,8 +351,8 @@ int main()
     // Free all the sdk subsystem
     IoTHub_Deinit();
 
-    (void)printf("Press any enter to continue:\r\n");
-    (void)getchar();
+//    (void)printf("Press any enter to continue:\r\n");
+//    (void)getchar();
 
     return 0;
 }
