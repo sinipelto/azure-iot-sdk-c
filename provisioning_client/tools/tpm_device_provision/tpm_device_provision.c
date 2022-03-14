@@ -59,7 +59,7 @@ int main()
     REGISTRATION_INFO reg_info;
     memset(&reg_info, 0, sizeof(reg_info));
 
-    (void)printf("Gathering the registration information...\r\n");
+//    (void)printf("Gathering the registration information...\r\n");
     if (platform_init() != 0)
     {
         (void)printf("Failed calling platform_init\r\n");
@@ -86,8 +86,8 @@ int main()
             }
             else
             {
-                (void)printf("\r\nREG_ID:\r\n%s\r\n", reg_info.registration_id);
-                (void)printf("\r\nEK:\r\n%s\r\n", STRING_c_str(encoded_ek));
+                (void)printf("\r\nREG_ID:%s\r\n", reg_info.registration_id);
+                (void)printf("\r\nEK:%s\r\n", STRING_c_str(encoded_ek));
                 STRING_delete(encoded_ek);
                 result = 0;
             }
