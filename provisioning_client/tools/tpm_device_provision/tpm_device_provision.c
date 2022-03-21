@@ -59,7 +59,7 @@ int main()
     REGISTRATION_INFO reg_info;
     memset(&reg_info, 0, sizeof(reg_info));
 
-//    (void)printf("Gathering the registration information...\r\n");
+   (void)printf("Gathering the registration information...\r\n");
     if (platform_init() != 0)
     {
         (void)printf("Failed calling platform_init\r\n");
@@ -86,8 +86,29 @@ int main()
             }
             else
             {
-                (void)printf("\r\nREG_ID:%s\r\n", reg_info.registration_id);
-                (void)printf("\r\nEK:%s\r\n", STRING_c_str(encoded_ek));
+                FILE* ek_file;
+                FILE* rg_file;
+
+                ek_file = fopen("endorsement_key.txt", "w");
+                rg_file = fopen("registration_id.txt", "w");
+
+                if (ek_file == NULL || rg_file == NULL)
+                {
+                    (void)printf("I/O ERROR: Failed to open files for writing.");
+                    return 1;
+                }
+
+                (void)printf("\r\nEndorsement Key:%s\r\n", STRING_c_str(encoded_ek));
+                (void)printf("\r\nRegistration ID:%s\r\n", reg_info.registration_id);
+
+                (void)fprintf(ek_file, "%s", STRING_c_str(encoded_ek));
+                (void)fprintf(rg_file, "%s", reg_info.registration_id);
+
+                fclose(ek_file);
+                fclose(rg_file);
+
+                (void)printf("Device provision information written into output files successfully.");
+
                 STRING_delete(encoded_ek);
                 result = 0;
             }
