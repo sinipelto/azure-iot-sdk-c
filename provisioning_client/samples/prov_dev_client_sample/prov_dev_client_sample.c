@@ -91,8 +91,19 @@ static void register_device_callback(PROV_DEVICE_RESULT register_result, const c
     g_registration_complete = true;
 }
 
-int main()
+int main(int argc, char* argv[])
 {
+    // arg0 == program name
+    // arg1 == ID_SCOPE
+    if (argc != 2)
+    {
+        printf("Invalid argument(s) or none provided. USAGE: %s <ID_SCOPE>\r\n", argv[0]);
+        return 1;
+    }
+
+    // Write id_scope into the reserved variable
+    strcpy(id_scope, argv[1]);
+
     SECURE_DEVICE_TYPE hsm_type;
     hsm_type = SECURE_DEVICE_TYPE_TPM;
     //hsm_type = SECURE_DEVICE_TYPE_X509;
@@ -175,6 +186,7 @@ int main()
         else
         {
             (void)printf("\r\nRegistering failed with error: %d\r\n\r\n", prov_device_result);
+            return 1;
         }
 
         Prov_Device_Destroy(prov_device_handle);
@@ -186,6 +198,8 @@ int main()
 
 //    (void)printf("Press enter key to exit:\r\n");
 //    (void)getchar();
+
+   (void)printf("All done. Exiting.\r\n");
 
     return 0;
 }
