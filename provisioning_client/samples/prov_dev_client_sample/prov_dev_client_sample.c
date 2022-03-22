@@ -61,7 +61,7 @@ MU_DEFINE_ENUM_STRINGS_WITHOUT_INVALID(PROV_DEVICE_RESULT, PROV_DEVICE_RESULT_VA
 MU_DEFINE_ENUM_STRINGS_WITHOUT_INVALID(PROV_DEVICE_REG_STATUS, PROV_DEVICE_REG_STATUS_VALUES);
 
 static const char* global_prov_uri = "global.azure-devices-provisioning.net";
-static const char* id_scope = "[ID Scope]";
+static const char* id_scope;
 
 volatile static bool g_registration_complete = false;
 static bool g_use_proxy = false;
@@ -97,12 +97,15 @@ int main(int argc, char* argv[])
     // arg1 == ID_SCOPE
     if (argc != 2)
     {
-        printf("Invalid argument(s) or none provided. USAGE: %s <ID_SCOPE>\r\n", argv[0]);
+        printf("Invalid or none argument(s) provided. USAGE: %s <ID_SCOPE>\r\n", argv[0]);
         return 1;
     }
 
-    // Write id_scope into the reserved variable
-    strcpy(id_scope, argv[1]);
+    // Assign id_scope into the reserved variable
+    // Set the pointer to point to the arg1 (char* => char*[1])
+    id_scope = argv[1];
+
+    (void)printf("Using ID SCOPE: '%s'\r\n", id_scope);
 
     SECURE_DEVICE_TYPE hsm_type;
     hsm_type = SECURE_DEVICE_TYPE_TPM;
@@ -199,7 +202,7 @@ int main(int argc, char* argv[])
 //    (void)printf("Press enter key to exit:\r\n");
 //    (void)getchar();
 
-   (void)printf("All done. Exiting.\r\n");
+    (void)printf("All done. Exiting.\r\n");
 
     return 0;
 }
