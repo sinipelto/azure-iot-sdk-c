@@ -53,8 +53,23 @@ static int gather_registration_info(REGISTRATION_INFO* reg_info)
     return result;
 }
 
-int main()
+int main(int argc, char* argv[])
 {
+    // arg0 == program name
+    // arg1 == filename/path to store the EK into
+    // arg1 == filename/path to store the Red ID into
+    if (argc != 3)
+    {
+        printf("Invalid or none argument(s) provided. USAGE: %s <EK_OUTPUT_FILENAME> <REGID_OUTPUT_FILENAME>\r\n", argv[0]);
+        return 1;
+    }
+
+    const char* ek_path = argv[1];
+    (void)printf("Using EK file path: '%s'\r\n", ek_path);
+
+    const char* rg_path = argv[2];
+    (void)printf("Using Reg ID file path: '%s'\r\n", rg_path);
+
     int result;
     REGISTRATION_INFO reg_info;
     memset(&reg_info, 0, sizeof(reg_info));
@@ -81,7 +96,7 @@ int main()
             STRING_HANDLE encoded_ek;
             if ((encoded_ek = Azure_Base64_Encode(reg_info.endorsement_key)) == NULL)
             {
-                (void)printf("Failure base64 encoding ek");
+                (void)printf("Failure base64 encoding ek\r\n");
                 result = __LINE__;
             }
             else
@@ -89,28 +104,31 @@ int main()
                 FILE* ek_file;
                 FILE* rg_file;
 
-                ek_file = fopen("endorsement_key.txt", "w");
-                rg_file = fopen("registration_id.txt", "w");
+                ek_file = fopen(ek_path, "w");
+                rg_file = fopen(rg_path, "w");
 
                 if (ek_file == NULL || rg_file == NULL)
                 {
-                    (void)printf("I/O ERROR: Failed to open files for writing.");
-                    return 1;
+                    (void)printf("I/O ERROR: Failed to open files for writing.\r\n");
+                    result = __LINE__;
                 }
+                else
+                {
+                    (void)printf("\r\n\r\nEndorsement Key: %s\r\n", STRING_c_str(encoded_ek));
+                    (void)printf("\r\nRegistration ID: %s\r\n\r\n", reg_info.registration_id);
 
-                (void)printf("\r\nEndorsement Key:%s\r\n", STRING_c_str(encoded_ek));
-                (void)printf("\r\nRegistration ID:%s\r\n", reg_info.registration_id);
+                    // Write the raw EK and RGID values into files for easier handling
+                    (void)fprintf(ek_file, "%s", STRING_c_str(encoded_ek));
+                    (void)fprintf(rg_file, "%s", reg_info.registration_id);
 
-                (void)fprintf(ek_file, "%s", STRING_c_str(encoded_ek));
-                (void)fprintf(rg_file, "%s", reg_info.registration_id);
+                    fclose(ek_file);
+                    fclose(rg_file);
 
-                fclose(ek_file);
-                fclose(rg_file);
+                    (void)printf("Device provision information written into output files successfully.\r\n");
 
-                (void)printf("Device provision information written into output files successfully.");
-
-                STRING_delete(encoded_ek);
-                result = 0;
+                    STRING_delete(encoded_ek);
+                    result = 0;
+                }
             }
             BUFFER_delete(reg_info.endorsement_key);
             free(reg_info.registration_id);
@@ -118,6 +136,8 @@ int main()
         prov_dev_security_deinit();
         platform_deinit();
     }
+
+    (void)printf("All done. Exiting.\r\n");
 
     return result;
 }
