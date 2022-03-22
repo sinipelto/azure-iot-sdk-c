@@ -65,7 +65,7 @@ MU_DEFINE_ENUM_STRINGS_WITHOUT_INVALID(PROV_DEVICE_RESULT, PROV_DEVICE_RESULT_VA
 MU_DEFINE_ENUM_STRINGS_WITHOUT_INVALID(PROV_DEVICE_REG_STATUS, PROV_DEVICE_REG_STATUS_VALUES);
 
 static const char* global_prov_uri = "global.azure-devices-provisioning.net";
-static const char* id_scope = "[ID Scope]";
+static const char* id_scope;
 
 static bool g_use_proxy = false;
 static const char* PROXY_ADDRESS = "127.0.0.1";
@@ -151,8 +151,22 @@ static void register_device_callback(PROV_DEVICE_RESULT register_result, const c
     }
 }
 
-int main()
+int main(int argc, char* argv[])
 {
+    // arg0 == program name
+    // arg1 == ID_SCOPE
+    if (argc != 2)
+    {
+        printf("Invalid or none argument(s) provided. USAGE: %s <ID_SCOPE>\r\n", argv[0]);
+        return 1;
+    }
+
+    // Assign id_scope into the reserved variable
+    // Set the pointer to point to the arg1 (char* => char*[1])
+    id_scope = argv[1];
+
+    (void)printf("Using ID SCOPE: '%s'\r\n", id_scope);
+
     SECURE_DEVICE_TYPE hsm_type;
     hsm_type = SECURE_DEVICE_TYPE_TPM;
     //hsm_type = SECURE_DEVICE_TYPE_X509;
@@ -353,6 +367,8 @@ int main()
 
 //    (void)printf("Press any enter to continue:\r\n");
 //    (void)getchar();
+
+    (void)printf("All done. Exiting.\r\n");
 
     return 0;
 }
